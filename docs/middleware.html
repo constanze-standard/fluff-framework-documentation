@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>中间件 · Fluff Document</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="有时你会想在 Application 调用 controller 之前或之后做一些事情，比如记录日志或开放 CORS 请求，这时你可以使用中间件 (middleware). 中间件是以 controller 为核心，层层嵌套的组件。中间件是栈结构的，最外层的中间件最先被调用。"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="中间件 · Fluff Document"/><meta property="og:type" content="website"/><meta property="og:url" content="https://constanze-standard.github.io/fluff-framework-documentationindex"/><meta property="og:description" content="有时你会想在 Application 调用 controller 之前或之后做一些事情，比如记录日志或开放 CORS 请求，这时你可以使用中间件 (middleware). 中间件是以 controller 为核心，层层嵌套的组件。中间件是栈结构的，最外层的中间件最先被调用。"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/fluff-framework-documentationimg/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css"/><link rel="alternate" type="application/atom+xml" href="https://constanze-standard.github.io/fluff-framework-documentation/blog/atom.xml" title="Fluff Document Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://constanze-standard.github.io/fluff-framework-documentation/blog/feed.xml" title="Fluff Document Blog RSS Feed"/><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/fluff-framework-documentationjs/scrollSpy.js"></script><link rel="stylesheet" href="/fluff-framework-documentationcss/prism.css"/><link rel="stylesheet" href="/fluff-framework-documentationcss/main.css"/><script src="/fluff-framework-documentationjs/codetabs.js"></script></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/fluff-framework-documentation"><h2 class="headerTitle">Fluff Document</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/fluff-framework-documentationdocs/welcome" target="_self">文档</a></li><li class=""><a href="/fluff-framework-documentationdocs/doc4" target="_self">API</a></li><li class=""><a href="/fluff-framework-documentationblog/" target="_self">博客</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>教程</span></h2></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">教程</h3><ul class=""><li class="navListItem"><a class="navItem" href="/fluff-framework-documentationdocs/welcome">欢迎</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentationdocs/principle">工作原理</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentationdocs/example">快速入门</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentationdocs/requestHandler">请求处理器</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/fluff-framework-documentationdocs/middleware">中间件</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">中间件</h1></header><article><div><span><p>有时你会想在 Application 调用 controller 之前或之后做一些事情，比如记录日志或开放 CORS 请求，这时你可以使用中间件 (middleware). 中间件是以 controller 为核心，层层嵌套的组件。中间件是栈结构的，最外层的中间件最先被调用。</p>
+<pre><code class="hljs css language-sh">*---------------------*
+|     middleware2     |
+|  *---------------*  |
+|  |  middleware1  |  |
+|  |   *-------*   |  |
+|  |   |       |   |  |   中间件模型的结构
+|  |   | core  |   |  |
+|  |   |       |   |  |
+|  |   *-------*   |  |
+|  *---------------*  |
+*---------------------*
+</code></pre>
+<p>Fluff 的的中间件遵循 PSR-15 标准，所以你的中间件必须实现 <code>Psr\Http\Server\MiddlewareInterface</code> 接口。</p>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ResponseInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">MiddlewareInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">RequestHandlerInterface</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SayHelloMiddleware</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">MiddlewareInterface</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">process</span><span class="hljs-params">(ServerRequestInterface $request, RequestHandlerInterface $handler)</span>: <span class="hljs-title">ResponseInterface</span>
+    </span>{
+        $request = $request-&gt;withAttribute(<span class="hljs-string">'say'</span>, <span class="hljs-string">'good bye!'</span>);
+        $response = $handler-&gt;handle($request);
+        $response = $response-&gt;withStatus(<span class="hljs-number">404</span>);
+        <span class="hljs-keyword">return</span> $response;
+    }
+}
+</code></pre>
+<p>以上案例中，我们定义了一个中间件，<code>process</code> 方法第二个参数是一个 request-handler 对象，request-handler 接受一个 server-side request 对象。当调用 <code>RequestHandlerInterface::handle</code> 时，会触发下一层中间件，最终会调用 controller，返回一个 PSR-7 response 对象。</p>
+<p>我们可以方便的围绕 controller 做一些事情，也可以不执行 <code>RequestHandlerInterface::handle</code> 中断程序，并构建一个 response 对象直接返回，例如用户的权限检查未通过的场景等。</p>
+<p>中间件只能在 route 中注册，当你使用 <code>withRoute</code> 方法时，在第四个参数中，将中间件名称添加到键名为 <code>middlewares</code> 的数组中，数组的键值越大，越靠近外层，越先被执行。</p>
+<pre><code class="hljs css language-php">$app-&gt;withRoute(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'/user'</span>, <span class="hljs-string">'userController'</span>, [
+    <span class="hljs-string">'middlewares'</span> =&gt; [
+        SayHelloMiddleware::class,
+        ...
+    ]
+])
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="添加全局中间件"></a><a href="#添加全局中间件" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>添加全局中间件</h3>
+<p>用 <code>Application::withMiddleware</code>方法添加一个全局中间件，withMiddleware 方法接受一个中间件名称。</p>
+<pre><code class="hljs css language-php">$app-&gt;withMiddleware(<span class="hljs-string">'GlobalMiddleware'</span>);
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/fluff-framework-documentationdocs/requestHandler"><span class="arrow-prev">← </span><span>请求处理器</span></a></div></div></div></div><div class="row py-4 mt-5 border-top"><p class="m-auto px-5 color-popdark">© 2019 Alex &lt;<a href="mailto:omytty.alex@gmail.com">omytty.alex@gmail.com</a>&gt;</p></div></div></body></html>
