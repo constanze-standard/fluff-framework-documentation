@@ -1,0 +1,225 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>调度器 (Dispatcher) · Fluff Document</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="`调度器 (Dispatcher)` 一般与[`路由中间件(RouteMiddleware)`](/fluff-framework-documentation/docs/RouterMiddleware) 和 `处理器(Handler)` 配合使用。"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="调度器 (Dispatcher) · Fluff Document"/><meta property="og:type" content="website"/><meta property="og:url" content="https://constanze-standard.github.io/fluff-framework-documentation/"/><meta property="og:description" content="`调度器 (Dispatcher)` 一般与[`路由中间件(RouteMiddleware)`](/fluff-framework-documentation/docs/RouterMiddleware) 和 `处理器(Handler)` 配合使用。"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/fluff-framework-documentation/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/fluff-framework-documentation/js/code-block-buttons.js"></script><script src="/fluff-framework-documentation/js/scrollSpy.js"></script><link rel="stylesheet" href="/fluff-framework-documentation/css/prism.css"/><link rel="stylesheet" href="/fluff-framework-documentation/css/main.css"/><script src="/fluff-framework-documentation/js/codetabs.js"></script></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/fluff-framework-documentation/"><h2 class="headerTitle">Fluff Document</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/fluff-framework-documentation/docs/welcome" target="_self">Fluff 文档</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>基本概念</span></h2></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">基本概念</h3><ul class=""><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/welcome">欢迎</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/principle">工作原理</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/example">快速入门</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/middleware">中间件 (Middleware)</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/handler">处理器 (Handler)</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/fluff-framework-documentation/docs/dispatcher">调度器 (Dispatcher)</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">中间件</h3><ul class=""><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/RouterMiddleware">路由中间件 RouterMiddleware</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/ExceptionCaptor">异常捕获 ExceptionCaptor</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">调度器 (Dispatcher)</h1></header><article><div><span><p><code>调度器 (Dispatcher)</code> 一般与<a href="/fluff-framework-documentation/docs/RouterMiddleware"><code>路由中间件(RouteMiddleware)</code></a> 和 <code>处理器(Handler)</code> 配合使用。</p>
+<p>在执行过程中，调度器会从 Request 中获取上层传递的调度信息 <code>(dispatch data)</code> 并构建由调度信息提供的动态绑定的中间件，然后将处理器作为内核进行最后的处理。下图展示了各组件与 <code>Dispatcher</code> 的关系。</p>
+<pre><code class="hljs css language-sh">*------------*
+| Middleware |      *-------------*
+|  Builder   |&lt;-----|   Router    |
+*------------*      | Middleware  |
+      |             *-------------*
+      V                    ^
+*------------*      [dispatch data]
+| Dispatcher |             ^
+*------------*             |
+      |            *-----------------* 
+      V            | Sub Middlewares |
+*------------*     *-----------------* 
+|    Sub     |             |
+| Middleware |&lt;------------*
+|  Builder   |
+*------------*
+      |
+      V
+*----------*
+|   Sub    |
+|  Handler |
+*----------* 
+</code></pre>
+<p>调度器是一个特殊的处理器，也可以直接传入 <code>Application</code> 中作为内核使用，但与 <code>Handler</code> 不同的是，它并不直接处理业务逻辑，而是先解析<code>调度信息(dispatcher data)</code>，构建处理链条，最后引用子处理器进行处理。而调度信息一般由<a href="/fluff-framework-documentation/docs/RouterMiddleware"><code>路由中间件(RouteMiddleware)</code></a>提供。</p>
+<p>调度器初始化的第一个参数是处理器的<code>定义(definition)</code>, 它是一个 <code>callable</code> 对象，负责创建处理器的实例。上一章展示的 <code>Handler</code>, <code>DelayHandler</code> 和 <code>DiHandler</code> 都包含了静态方法 <code>getDefinition</code> 用来获取自身的 <code>definition</code>.</p>
+<p><code>Dispatcher</code> 会继承子处理器的特性，并且 <code>RouterMiddleware</code> 所接受的调用类型也与子处理器保持一致。</p>
+<h3><a class="anchor" aria-hidden="true" id="与-handler-的组合"></a><a href="#与-handler-的组合" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>与 Handler 的组合</h3>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Application</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Middleware</span>\<span class="hljs-title">EndOutputBuffer</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Middleware</span>\<span class="hljs-title">RouterMiddleware</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">Dispatcher</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">Handler</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">Response</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">ServerRequest</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+
+$dispatcher = <span class="hljs-keyword">new</span> Dispatcher(Handler::getDefinition());
+$app = <span class="hljs-keyword">new</span> Application($dispatcher);
+
+<span class="hljs-comment">/** <span class="hljs-doctag">@var</span> RouterMiddleware $router */</span>
+$router = $app-&gt;addMiddleware(<span class="hljs-keyword">new</span> RouterMiddleware());
+$app-&gt;addMiddleware(<span class="hljs-keyword">new</span> EndOutputBuffer());
+
+$router-&gt;get(<span class="hljs-string">'/user/{name}'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(ServerRequestInterface $request, $args)</span> </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-number">200</span>, [], <span class="hljs-string">'Hello '</span> . $args[<span class="hljs-string">'name'</span>]);
+});
+
+$request = <span class="hljs-keyword">new</span> ServerRequest(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'/user/World'</span>);
+$app-&gt;handle($request);
+</code></pre>
+<p><code>RouterMiddleware</code> 为 FLuff 提供了路由功能，我们使用 <code>RouterMiddleware::get</code> 辅助方法，注册一个 <code>GET</code> 请求的路由，它的第一个参数是 URL 规则，你可以使用 <code>{参数名称}</code> 的形式标记一个 URL 参数，这个参数会传入处理器的额外参数中，额外参数在 <code>Handler</code> 中是以数组的形式传入 <code>callable</code> 对象的。</p>
+<h3><a class="anchor" aria-hidden="true" id="与-delayhandler-的组合"></a><a href="#与-delayhandler-的组合" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>与 DelayHandler 的组合</h3>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Application</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Middleware</span>\<span class="hljs-title">EndOutputBuffer</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Middleware</span>\<span class="hljs-title">RouterMiddleware</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">Dispatcher</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">DelayHandler</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">Response</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">ServerRequest</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Target</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(string $say)</span>
+    </span>{
+        <span class="hljs-keyword">$this</span>-&gt;say = $say;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">index</span><span class="hljs-params">(ServerRequestInterface $request, array $args)</span>
+    </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-number">200</span>, [], <span class="hljs-string">'Hello '</span>. $args[<span class="hljs-string">'name'</span>]);
+    }
+}
+
+$dispatcher = <span class="hljs-keyword">new</span> Dispatcher(DelayHandler::getDefinition(<span class="hljs-string">'Hello '</span>));
+$app = <span class="hljs-keyword">new</span> Application($dispatcher);
+
+<span class="hljs-comment">/** <span class="hljs-doctag">@var</span> RouterMiddleware $router */</span>
+$router = $app-&gt;addMiddleware(<span class="hljs-keyword">new</span> RouterMiddleware());
+$app-&gt;addMiddleware(<span class="hljs-keyword">new</span> EndOutputBuffer());
+
+$router-&gt;get(<span class="hljs-string">'/say/{name}'</span>, <span class="hljs-string">'Target@index'</span>);
+
+$request = <span class="hljs-keyword">new</span> ServerRequest(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'/say/World'</span>);
+$app-&gt;handle($request);
+</code></pre>
+<p><code>DelayHandler::getDefinition</code> 的构造方法接受任意数量的参数，它们将作为<code>callable</code>对象初始化的参数传入。</p>
+<p>使用 <code>DelayHandler</code> 作为子处理器，可以避免 <code>Target</code> 对象在路由匹配之前初始化，如果你的项目中有大量的 <a href="https://en.wikipedia.org/wiki/Model–view–controller">controller</a> 需要通过路由进行连接，那么应该考虑使用 <code>DelayHandler</code>（或下面的 DiHandler），因为它可以避免无意义的初始化消耗。</p>
+<h3><a class="anchor" aria-hidden="true" id="与-dihandler-的组合"></a><a href="#与-dihandler-的组合" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>与 DiHandler 的组合</h3>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">Beige</span>\<span class="hljs-title">Psr11</span>\<span class="hljs-title">Container</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Application</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Middleware</span>\<span class="hljs-title">EndOutputBuffer</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Middleware</span>\<span class="hljs-title">RouterMiddleware</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">Dispatcher</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">DiHandler</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">Response</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">ServerRequest</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Service</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sayHello</span><span class="hljs-params">($name)</span>
+    </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello '</span> . $name;
+    }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Target</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">index</span><span class="hljs-params">(Service $service, $name)</span>
+    </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-number">200</span>, [], $service-&gt;sayHello($name));
+    }
+}
+
+$container = <span class="hljs-keyword">new</span> Container();
+$container-&gt;set(Service::class, <span class="hljs-keyword">new</span> Service());
+
+$dispatcher = <span class="hljs-keyword">new</span> Dispatcher(DiHandler::getDefinition($container));
+$app = <span class="hljs-keyword">new</span> Application($dispatcher);
+
+<span class="hljs-comment">/** <span class="hljs-doctag">@var</span> RouterMiddleware $router */</span>
+$router = $app-&gt;addMiddleware(<span class="hljs-keyword">new</span> RouterMiddleware());
+$app-&gt;addMiddleware(<span class="hljs-keyword">new</span> EndOutputBuffer());
+
+$router-&gt;get(<span class="hljs-string">'/say/{name}'</span>, <span class="hljs-string">'Target@index'</span>);
+
+$request = <span class="hljs-keyword">new</span> ServerRequest(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'/say/World'</span>);
+$app-&gt;handle($request);
+</code></pre>
+<p><code>DiHandler::getDefinition</code> 方法接受一个 <code>Psr\Container\ContainerInterface</code> 容器的实例，依赖注入系统将从这个容器做依赖查找，并将找到的依赖对象注入 <code>Target</code> 对象中。与 <code>DelayHandler</code> 相似，<code>DiHandler</code> 同样具有延迟初始化的特性。</p>
+<h4><a class="anchor" aria-hidden="true" id="我的-serverrequest-对象在中间件中改变了-但我无法将它传入-target-的方法中"></a><a href="#我的-serverrequest-对象在中间件中改变了-但我无法将它传入-target-的方法中" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><em>我的 <code>ServerRequest</code> 对象在中间件中改变了，但我无法将它传入 <code>Target</code> 的方法中。</em></h4>
+<p>这个问题的解决方案也是利用中间件，<code>RouterMiddleware::addMiddleware</code> 方法允许你再路由层面添加一个中间件，你只需定义一个中间件，然后将 <code>ServerRequest</code> 对象载入容器即可：</p>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">Beige</span>\<span class="hljs-title">Psr11</span>\<span class="hljs-title">Container</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ResponseInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">MiddlewareInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">RequestHandlerInterface</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RequestCatchingMiddleware</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">MiddlewareInterface</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">__construct</span><span class="hljs-params">(Container $container)</span>
+    </span>{
+        <span class="hljs-keyword">$this</span>-&gt;container = $container;
+    }
+
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">process</span><span class="hljs-params">(ServerRequestInterface $request, RequestHandlerInterface $handler)</span>: <span class="hljs-title">ResponseInterface</span>
+    </span>{
+        <span class="hljs-keyword">$this</span>-&gt;container-&gt;set(ServerRequestInterface::class, $request);
+        <span class="hljs-keyword">$this</span>-&gt;container-&gt;set(get_class($request), $request);
+        <span class="hljs-keyword">return</span> $handler-&gt;handle($request);
+    }
+}
+
+...
+$router-&gt;addMiddleware(<span class="hljs-keyword">new</span> RequestCatchingMiddleware($container));
+</code></pre>
+<p>中间件采用<u>“后进先出”</u>的执行模式，所以，<code>RequestCatchingMiddleware</code> 应该在路由构建之前添加。然后 <code>Target::index</code> 就可以通过依赖注入获取 <code>ServerRequestInterface</code> 了。</p>
+<pre><code class="hljs css language-php"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Target</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">index</span><span class="hljs-params">(ServerRequestInterface $request, Service $service, $name)</span>
+    </span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-number">200</span>, [], $service-&gt;sayHello($name));
+    }
+}
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/fluff-framework-documentation/docs/handler"><span class="arrow-prev">← </span><span>处理器 (Handler)</span></a><a class="docs-next button" href="/fluff-framework-documentation/docs/RouterMiddleware"><span class="function-name-prevnext">路由中间件 RouterMiddleware</span><span class="arrow-next"> →</span></a></div></div></div></div><div class="row py-4 mt-5 border-top"><p class="m-auto px-5 color-popdark">© 2019 Alex &lt;<a href="mailto:omytty.alex@gmail.com">omytty.alex@gmail.com</a>&gt;</p></div></div></body></html>
