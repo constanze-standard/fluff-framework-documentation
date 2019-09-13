@@ -104,7 +104,7 @@ $app-&gt;handle($rquest);
 $app = <span class="hljs-keyword">new</span> Application($handler);
 $app-&gt;addMiddleware(<span class="hljs-keyword">new</span> EndOutputBuffer());
 
-$app-&gt;handle($rquest);
+$app-&gt;handle($request);
 </code></pre>
 <p><code>EndOutputBuffer</code> 的职责是关闭缓冲区，并且会冲刷掉带有 <code>flushable</code> 标志的输出缓冲区，或清空带有 <code>cleanable</code> 标志的输出缓冲区，最终将所有缓冲区关闭。输出内容的大小，默认每 <code>4096</code> 字节会做一次 flush 操作，你也可以通过构造方法的参数改变这个值的大小。</p>
 <p>现在，我们再来访问一次 <a href="http://127.0.0.1:8080?words=在吗？">http://127.0.0.1:8080?words=在吗？</a></p>
