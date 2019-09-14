@@ -74,7 +74,7 @@ $creator = <span class="hljs-keyword">new</span> ServerRequestCreator(
 $request = $creator-&gt;fromGlobals();
 </code></pre>
 <p>OK, 准备工作结束，进入正题！我们的目标很简单，实现一个在网络上流传已久的<strong>“价值百万的人工智能程序”</strong>。</p>
-<p>这是一个对话程序，它可以智能的回答用户的任何提问，显然，这个应用只需要一个单一的接口，所以我们选择 <code>Handler</code> 作为<code>处理器</code>来承载这段逻辑。<code>Handler</code> 只接受一个 <code>callable</code> 对象作为逻辑的主体，并向它传入一个 <code>ServerRequestInterface</code> 实例作为参数：</p>
+<p>这是一个对话程序，它可以智能的回答用户的任何提问，显然，这个应用只需要一个单一的接口，所以我们选择 <code>Handler</code> 作为<code>处理器</code>来承载这段逻辑。<code>Handler</code> 我们向 Handler 传入一个 <code>callable</code> 对象作为逻辑的主体，Handler 会将过滤后的 <code>ServerRequestInterface</code> 实例传递给 <code>callable</code> 对象作为参数。</p>
 <pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Application</span>;
 <span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">Handler</span>;
 <span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
