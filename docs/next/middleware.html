@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>中间件 (Middleware) · Fluff Document</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="`中间件(Middleware)`的基本功能是提供一种过滤机制，用来改造和筛选 HTTP 请求，一种常见的场景是对用户进行身份验证，如果验证不通过，会将用户引导至登录页面。另一种场景是为所有待返回的 `Response` 添加 `CORS` 头信息，以允许跨域请求，如 [`tuupola/cors-middleware`](https://github.com/tuupola/cors-middleware)."/><meta name="docsearch:version" content="next"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="中间件 (Middleware) · Fluff Document"/><meta property="og:type" content="website"/><meta property="og:url" content="https://constanze-standard.github.io/fluff-framework-documentation/"/><meta property="og:description" content="`中间件(Middleware)`的基本功能是提供一种过滤机制，用来改造和筛选 HTTP 请求，一种常见的场景是对用户进行身份验证，如果验证不通过，会将用户引导至登录页面。另一种场景是为所有待返回的 `Response` 添加 `CORS` 头信息，以允许跨域请求，如 [`tuupola/cors-middleware`](https://github.com/tuupola/cors-middleware)."/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/fluff-framework-documentation/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/fluff-framework-documentation/js/code-block-buttons.js"></script><script src="/fluff-framework-documentation/js/scrollSpy.js"></script><link rel="stylesheet" href="/fluff-framework-documentation/css/prism.css"/><link rel="stylesheet" href="/fluff-framework-documentation/css/main.css"/><script src="/fluff-framework-documentation/js/codetabs.js"></script></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/fluff-framework-documentation/"><h2 class="headerTitle">Fluff Document</h2></a><a href="/fluff-framework-documentation/versions"><h3>next</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/fluff-framework-documentation/docs/next/doc1" target="_self">Fluff 文档</a></li><li class=""><a href="/fluff-framework-documentation/github" target="_self">Github</a></li><li class=""><a href="/fluff-framework-documentation/follow-us" target="_self">关注项目</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>基本概念</span></h2></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">基本概念</h3><ul class=""><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/doc1">欢迎</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/principle">工作原理</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/agreement">约定</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/example">快速入门</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/fluff-framework-documentation/docs/next/middleware">中间件 (Middleware)</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/handler">处理器 (Handler)</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/dispatcher">调度器 (Dispatcher)</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">中间件</h3><ul class=""><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/RouterMiddleware">路由中间件 RouterMiddleware</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/ExceptionCaptor">异常捕获 ExceptionCaptor</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">中间件 (Middleware)</h1></header><article><div><span><p><code>中间件(Middleware)</code>的基本功能是提供一种过滤机制，用来改造和筛选 HTTP 请求，一种常见的场景是对用户进行身份验证，如果验证不通过，会将用户引导至登录页面。另一种场景是为所有待返回的 <code>Response</code> 添加 <code>CORS</code> 头信息，以允许跨域请求，如 <a href="https://github.com/tuupola/cors-middleware"><code>tuupola/cors-middleware</code></a>.</p>
+<p>中间件是一个层次模型，你可以将它看做一系列的层级，请求将从外向内通过每一层中间件，最终抵达 <code>Handler</code>. 在处理过程中，每一层都有权通过请求或拒绝请求，返回应答。当其中一层返回 <code>Response</code>对象后，处理链条也随之终止。</p>
+<pre><code class="hljs css language-sh">*-------------------------*
+|       Middleware        |
+|   *-----------------*   |
+|   |   Middleware    |   |
+|   |   *---------*   |   |   *---------*
+|   |   |         |&lt;--|&lt;--|&lt;--| Request |
+|   |   | Request |   |   |   *---------*
+|   |   | Handler |   |   |   *----------*
+|   |   |         |--&gt;|--&gt;|--&gt;| Response |
+|   |   *---------*   |   |   *----------*
+|   *-----------------*   |
+*-------------------------*
+</code></pre>
+<p>Fluff 的的中间件遵循 <code>PSR-15</code> 标准，所以必须实现 <code>Psr\Http\Server\MiddlewareInterface</code>.</p>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ResponseInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">MiddlewareInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">RequestHandlerInterface</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SayHelloMiddleware</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">MiddlewareInterface</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">process</span><span class="hljs-params">(ServerRequestInterface $request, RequestHandlerInterface $handler)</span>: <span class="hljs-title">ResponseInterface</span>
+    </span>{
+        <span class="hljs-comment">// 前置操作</span>
+        $response = $handler-&gt;handle($request);
+        <span class="hljs-comment">// 后置操作</span>
+        <span class="hljs-keyword">return</span> $response;
+    }
+}
+</code></pre>
+<p>通过 <code>\Psr\Http\Server\RequestHandlerInterface::handler</code> 方法，将处理后的 <code>Request</code> 对象传入下一层中间件或 <code>Handler</code> 中，这样，应用程序的每一层都只关注自己需要处理的业务，增强了程序的可用性。返回的 <code>Response</code> 将有一个回溯的过程，让之前的每一个中间件也有机会对它做出调整。</p>
+<p>中间件不仅过滤请求，也是扩展功能的重要手段，接下来的章节将展示，由不同种类的中间件和 Request Handle 搭配衍生出的几种<code>架构风格</code>。</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/fluff-framework-documentation/docs/next/example"><span class="arrow-prev">← </span><span>快速入门</span></a><a class="docs-next button" href="/fluff-framework-documentation/docs/next/handler"><span>处理器 (Handler)</span><span class="arrow-next"> →</span></a></div></div></div></div><div class="row py-4 mt-5 border-top"><p class="m-auto px-5 color-popdark">© 2019 Alex &lt;<a href="mailto:omytty.alex@gmail.com">omytty.alex@gmail.com</a>&gt;</p></div></div></body></html>

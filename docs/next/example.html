@@ -1,0 +1,147 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>快速入门 · Fluff Document</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="本章提供一个简单有趣的实践案例，构建一个最小化的应用程序，并对 Fluff 的中的概念做一个基本介绍。我们假设你已经安装好了 `Fluff 2.0`，如果还没有，请先移步[欢迎页面](/fluff-framework-documentation/docs/next/doc1)完成安装。"/><meta name="docsearch:version" content="next"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="快速入门 · Fluff Document"/><meta property="og:type" content="website"/><meta property="og:url" content="https://constanze-standard.github.io/fluff-framework-documentation/"/><meta property="og:description" content="本章提供一个简单有趣的实践案例，构建一个最小化的应用程序，并对 Fluff 的中的概念做一个基本介绍。我们假设你已经安装好了 `Fluff 2.0`，如果还没有，请先移步[欢迎页面](/fluff-framework-documentation/docs/next/doc1)完成安装。"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/fluff-framework-documentation/img/favicon.ico"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/tomorrow-night-bright.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/fluff-framework-documentation/js/code-block-buttons.js"></script><script src="/fluff-framework-documentation/js/scrollSpy.js"></script><link rel="stylesheet" href="/fluff-framework-documentation/css/prism.css"/><link rel="stylesheet" href="/fluff-framework-documentation/css/main.css"/><script src="/fluff-framework-documentation/js/codetabs.js"></script></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/fluff-framework-documentation/"><h2 class="headerTitle">Fluff Document</h2></a><a href="/fluff-framework-documentation/versions"><h3>next</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/fluff-framework-documentation/docs/next/doc1" target="_self">Fluff 文档</a></li><li class=""><a href="/fluff-framework-documentation/github" target="_self">Github</a></li><li class=""><a href="/fluff-framework-documentation/follow-us" target="_self">关注项目</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>基本概念</span></h2></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">基本概念</h3><ul class=""><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/doc1">欢迎</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/principle">工作原理</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/agreement">约定</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/fluff-framework-documentation/docs/next/example">快速入门</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/middleware">中间件 (Middleware)</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/handler">处理器 (Handler)</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/dispatcher">调度器 (Dispatcher)</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">中间件</h3><ul class=""><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/RouterMiddleware">路由中间件 RouterMiddleware</a></li><li class="navListItem"><a class="navItem" href="/fluff-framework-documentation/docs/next/ExceptionCaptor">异常捕获 ExceptionCaptor</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">快速入门</h1></header><article><div><span><p>本章提供一个简单有趣的实践案例，构建一个最小化的应用程序，并对 Fluff 的中的概念做一个基本介绍。我们假设你已经安装好了 <code>Fluff 2.0</code>，如果还没有，请先移步<a href="/fluff-framework-documentation/docs/next/doc1">欢迎页面</a>完成安装。</p>
+<p>我们的案例中还需要用到 PSR-17 Factory 去生成 PSR-7 Server Request, 这里我选择了 <code>nyholm/psr7-server</code>，当然，你也可以选择任何你喜欢的组件。</p>
+<pre><code class="hljs css language-sh">composer require nyholm/psr7 nyholm/psr7-server
+</code></pre>
+<p>由于我们需要一个 PSR-7 Server Request 作为请求载体，所以开始之前，我们首先用 <code>nyholm/psr7-server</code> 来生成这个 <code>ServerRequest</code>.</p>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">Factory</span>\<span class="hljs-title">Psr17Factory</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7Server</span>\<span class="hljs-title">ServerRequestCreator</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+
+$psr17Factory = <span class="hljs-keyword">new</span> Psr17Factory();
+$creator = <span class="hljs-keyword">new</span> ServerRequestCreator(
+    $psr17Factory,
+    $psr17Factory,
+    $psr17Factory,
+    $psr17Factory
+);
+<span class="hljs-comment">/** <span class="hljs-doctag">@var</span> ServerRequestInterface $request */</span>
+$request = $creator-&gt;fromGlobals();
+</code></pre>
+<p>OK, 准备工作结束，进入正题！我们的目标很简单，实现一个在网络上流传已久的<strong>“价值百万的人工智能程序”</strong>。</p>
+<p>这是一个对话程序，它可以智能的回答用户的任何提问，显然，这个应用只需要一个单一的接口，所以我们选择 <code>Handler</code> 作为<code>处理器</code>来承载这段逻辑。我们向 Handler 传入一个 <code>callable</code> 对象作为逻辑的主体，Handler 会将过滤后的 <code>ServerRequestInterface</code> 实例传递给 <code>callable</code> 对象作为参数。</p>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Application</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">RequestHandler</span>\<span class="hljs-title">Handler</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">Response</span>;
+
+$handler = <span class="hljs-keyword">new</span> Handler(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(ServerRequestInterface $request)</span> </span>{
+    $queryParams = $request-&gt;getQueryParams();
+    $words = $queryParams[<span class="hljs-string">'words'</span>];
+
+    $words = str_replace(
+        [<span class="hljs-string">'吗'</span>, <span class="hljs-string">'?'</span>, <span class="hljs-string">'？'</span>],
+        [<span class="hljs-string">''</span>, <span class="hljs-string">'!'</span>, <span class="hljs-string">'！'</span>],
+        $words
+    );
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-number">200</span>, [<span class="hljs-string">'Content-Type'</span> =&gt; <span class="hljs-string">'text/plain'</span>], $words);
+});
+</code></pre>
+<p>现在，主要逻辑已经完成，我们需要把这个<code>处理器</code> <code>$handler</code> 传入入口模块，然后调用 <code>handle</code> 方法，载入事先准备好的 <code>ServerRequest</code> 对象，触发处理链条。</p>
+<pre><code class="hljs css language-php">$app = <span class="hljs-keyword">new</span> Application($handler);
+$app-&gt;handle($rquest);
+</code></pre>
+<p>看似大功告成了，现在访问 <a href="http://127.0.0.1:8080?words=在吗？">http://127.0.0.1:8080?words=在吗？</a></p>
+<p>哇哦，什么都没有。因为我们犯了一个错误，我们只是完成了逻辑执行，但是并没有输出 <code>Response</code>. 看到这里你也许会很奇怪，因为这和以往使用的框架不同，FLuff 绝不会做多余的事情。要想输出应答，我们就需要找到作用于<code>输出缓冲区(Output Buffer)</code>的中间件 <code>EndOutputBuffer</code>, 将这个中间件添加到 <code>Application</code> 中。让我们来重构这段代码：</p>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">ConstanzeStandard</span>\<span class="hljs-title">Fluff</span>\<span class="hljs-title">Middleware</span>\<span class="hljs-title">EndOutputBuffer</span>;
+...
+
+$app = <span class="hljs-keyword">new</span> Application($handler);
+$app-&gt;addMiddleware(<span class="hljs-keyword">new</span> EndOutputBuffer());
+
+$app-&gt;handle($request);
+</code></pre>
+<p><code>EndOutputBuffer</code> 的职责是关闭缓冲区，并且会冲刷掉带有 <code>flushable</code> 标志的输出缓冲区，或清空带有 <code>cleanable</code> 标志的输出缓冲区，最终将所有缓冲区关闭。输出内容的大小，默认每 <code>4096</code> 字节会做一次 flush 操作，你也可以通过构造方法的参数改变这个值的大小。</p>
+<p>现在，我们再来访问一次 <a href="http://127.0.0.1:8080?words=在吗？">http://127.0.0.1:8080?words=在吗？</a></p>
+<pre><code class="hljs css language-bash">在！
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="编写中间件"></a><a href="#编写中间件" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>编写中间件</h3>
+<p>上面的例子中有一个不合理的地方，就是如果我们没有传入 <code>words</code> 参数，程序就会崩溃，你可以选择在处理器内部加一套验证的逻辑，但这样会让代码变得臃肿不堪，另一方面，请求处理器也不期望得到一个不符合要求 <code>Request</code>.</p>
+<p>一个好的做法是，加一个验证 GET 请求参数的<code>中间件(Middleware)</code>。Fluff 的中间件系统符合 <code>PSR-15</code> 的标准，你的中间件也必须实现 <code>\Psr\Http\Server\MiddlewareInterface</code> 接口。</p>
+<p>下面，我们来实现这个验证请求的中间件，如果请求没有传递 <code>words</code> 参数，则直接返回 <code>400 Bad Request</code> 响应体。</p>
+<pre><code class="hljs css language-php"><span class="hljs-keyword">use</span> <span class="hljs-title">Nyholm</span>\<span class="hljs-title">Psr7</span>\<span class="hljs-title">Response</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ResponseInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Message</span>\<span class="hljs-title">ServerRequestInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">MiddlewareInterface</span>;
+<span class="hljs-keyword">use</span> <span class="hljs-title">Psr</span>\<span class="hljs-title">Http</span>\<span class="hljs-title">Server</span>\<span class="hljs-title">RequestHandlerInterface</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VerificationMiddleware</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">MiddlewareInterface</span>
+</span>{
+    <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">process</span><span class="hljs-params">(ServerRequestInterface $request, RequestHandlerInterface $handler)</span>: <span class="hljs-title">ResponseInterface</span>
+    </span>{
+        $queryParams = $request-&gt;getQueryParams();
+        <span class="hljs-keyword">if</span> (array_key_exists(<span class="hljs-string">'words'</span>, $queryParams)) {
+            <span class="hljs-keyword">return</span> $handler-&gt;handle($request);
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Response(<span class="hljs-number">400</span>);
+    }
+}
+</code></pre>
+<p>这个中间件应该放在 <code>EndOutputBuffer</code> 的里层，因为 <code>VerificationMiddleware</code> 需要通过下一层的 <code>EndOutputBuffer</code> 输出响应。在代码中，应该在 <code>EndOutputBuffer</code> 之前添加。</p>
+<pre><code class="hljs css language-php">$app = <span class="hljs-keyword">new</span> Application($requestHandler);
+
+$app-&gt;addMiddleware(<span class="hljs-keyword">new</span> VerificationMiddleware());
+$app-&gt;addMiddleware(<span class="hljs-keyword">new</span> EndOutputBuffer());
+
+$app-&gt;handle($rquest);
+</code></pre>
+<p>我们再来做一下测试，访问 <a href="http://127.0.0.1:8080">http://127.0.0.1:8080</a></p>
+<p>是不是出现了 <code>400 Bad Request</code> 的响应呢 :)</p>
+<p>到现在，这个最小化应用已经完成了。对于使用者来说，选择哪种<code>处理器(Handler)</code> 将决定后续的开发模式，甚至影响代码的风格。而功能的扩展，则完全取决于使用了哪些<code>中间件(Middleware)</code>。</p>
+<p>Fluff 提供了多种多样的处理器和中间件，可以完成风格迥异的架构，这些我们将在后续的章节中学到。</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/fluff-framework-documentation/docs/next/agreement"><span class="arrow-prev">← </span><span>约定</span></a><a class="docs-next button" href="/fluff-framework-documentation/docs/next/middleware"><span>中间件 (Middleware)</span><span class="arrow-next"> →</span></a></div></div></div></div><div class="row py-4 mt-5 border-top"><p class="m-auto px-5 color-popdark">© 2019 Alex &lt;<a href="mailto:omytty.alex@gmail.com">omytty.alex@gmail.com</a>&gt;</p></div></div></body></html>
